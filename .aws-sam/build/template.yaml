@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'devices-location
+
+  Sample SAM Template for devices-location
+
+  '
+Globals:
+  Function:
+    Timeout: 20
+Resources:
+  DevicesLocationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: DevicesLocationFunction
+      Handler: dl.App::handleRequest
+      Runtime: java11
+      MemorySize: 512
+      Environment:
+        Variables:
+          PARAM1: VALUE
+      Events:
+        ReadAllDevices:
+          Type: Api
+          Properties:
+            Path: /devices
+            Method: get
+        ReadDeviceById:
+          Type: Api
+          Properties:
+            Path: /devices/{id}
+            Method: get
+        CreateDevice:
+          Type: Api
+          Properties:
+            Path: /devices
+            Method: post
+        UpdateDevice:
+          Type: Api
+          Properties:
+            Path: /devices/{id}
+            Method: put
+        DeleteDevice:
+          Type: Api
+          Properties:
+            Path: /devices/{id}
+            Method: delete
+Outputs:
+  DevicesLocationApi:
+    Description: API Gateway endpoint URL for Prod stage for Devices Location function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/dl/
+  DevicesLocationFunction:
+    Description: Devices Location Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - DevicesLocationFunction
+      - Arn
+  DevicesLocationFunctionIamRole:
+    Description: Implicit IAM Role created for Devices Location function
+    Value:
+      Fn::GetAtt:
+      - DevicesLocationFunctionRole
+      - Arn
